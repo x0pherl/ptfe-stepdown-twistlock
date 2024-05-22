@@ -10,19 +10,13 @@ desc: A parameterized twist and snap fitting.
 
 license:
 
+license:
+
     Copyright 2024 x0pherl
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
 
 """
 from configparser import ConfigParser
@@ -53,16 +47,16 @@ class TwistSnapConnector:
     TwistSnap connectors and sockets that twist together and lock
 
     Args:
-        connector_diameter (int): The diameter of the connection.
-        wall_size (int): Sets bot the width and depth of the walls.
+        connector_diameter (float): The diameter of the connection.
+        wall_size (float): Sets bot the width and depth of the walls.
 
-        tolerance (int): Sets the tolerance between the two parts
+        tolerance (float): Sets the tolerance between the two parts
 
     Raises:
         ValueError: if end_finishes not in ["raw", "square", "fade", "chamfer"]:
     """
 
-    def __init__(self, connector_diameter=10, wall_size=2, tolerance=.1):
+    def __init__(self, connector_diameter=10, wall_size=2, tolerance=.15):
         """
         Initialize the InternalFitting by loading a configuration file.
 
@@ -258,7 +252,7 @@ class TwistSnapConnector:
         Returns:
             float: The allowance of size between the socket and the connector.
         """
-        return self.config.getfloat('general', 'tolerance', fallback=.1)
+        return self.config.getfloat('general', 'tolerance', fallback=.15)
 
     @tolerance.setter
     def tolerance(self, value):
@@ -320,102 +314,17 @@ class TwistSnapConnector:
         return twistbase
 
     @property
-    def xtwist_snap_socket(self) -> Compound:
-        """
-        Returns a Part for the defined twist snap socket
-        """
-        with BuildPart() as socket_fitting:
-            with BuildPart() as snap_socket:
-                Cylinder(
-                    radius=self.connector_diameter+self.wall_width*2,
-                    height=self.wall_depth*2,
-                    align=(Align.CENTER, Align.CENTER, Align.MIN),
-                )
-                Cylinder(
-                    radius=self.connector_diameter+self.tolerance,
-                    height=self.wall_depth*2,
-                    align=(Align.CENTER, Align.CENTER, Align.MIN),
-                    mode=Mode.SUBTRACT
-                )
-                trace_path = (
-                    snap_socket.edges()
-                    .filter_by(GeomType.CIRCLE)
-                    .sort_by(Axis.Z, reverse=True)
-                    .sort_by(SortBy.RADIUS, reverse=True)[-1]
-                )  # top edge of cylinder
-                path = trace_path.trim((self.arc_percentage/-200)*1.1,
-                                       (self.arc_percentage/200)*1.1)
-                with BuildPart(mode=Mode.PRIVATE) as snapfit:
-                    path = path.rotate(Axis.Z, 90)
-                    with BuildSketch(path ^ 0):
-                        Polygon(
-                            (
-                                (0, 0),
-                                (self.snapfit_radius_extension, 0),
-                                (self.snapfit_radius_extension, self.snapfit_height*2),
-                                (0, self.snapfit_height*2),
-                            ),
-                            align=(Align.MAX, Align.MIN),
-                        )
-                    sweep(path=path)
-                    fillet(
-                        snapfit.faces().sort_by(Axis.Y)[-1].edges().filter_by(Axis.Z),
-                        self.snapfit_radius_extension / 8,
-                    )
-                with PolarLocations(0, self.snapfit_count):
-                    add(snapfit.part, mode=Mode.SUBTRACT)
-
-                path = trace_path.trim((self.arc_percentage/-200)*1.1,
-                                       (self.arc_percentage/200)*3.1)
-                with BuildPart(mode=Mode.PRIVATE) as snapfit:
-                    path = path.rotate(Axis.Z, 90)
-                    with BuildSketch(path ^ 0):
-                        Polygon(
-                            (
-                                (0, 0),
-                                (self.snapfit_radius_extension+self.tolerance, 0),
-                                (self.snapfit_radius_extension+self.tolerance,
-                                    self.snapfit_height+self.tolerance),
-                                (0, self.snapfit_height/2+self.tolerance),
-                            ),
-                            align=(Align.MAX, Align.MIN),
-                        )
-                    sweep(path=path)
-                    fillet(
-                        snapfit.faces().sort_by(Axis.Y)[-1].edges().filter_by(Axis.Z),
-                        self.snapfit_radius_extension / 8,
-                    )
-                with PolarLocations(0, self.snapfit_count):
-                    add(snapfit.part, mode=Mode.SUBTRACT)
-                with PolarLocations(
-                        self.connector_diameter+self.snapfit_radius_extension+
-                        self.tolerance*2, self.snapfit_count,
-                        start_angle=360/self.arc_percentage+90):
-                    Cylinder(radius=self.snapfit_radius_extension / 2,
-                                height=self.snapfit_height,
-                                align=(Align.CENTER,Align.CENTER, Align.MIN))
-            with BuildPart(snap_socket.faces().sort_by(Axis.Z, reverse=True)[-1]):
-                Cylinder(
-                    radius=self.connector_diameter+self.wall_width*2,
-                    height=self.wall_depth*1,
-                    align=(Align.CENTER, Align.CENTER, Align.MIN),
-                )
-
-        return socket_fitting
-
-    @property
     def twist_snap_socket(self) -> Compound:
         """
         Returns a Part for the defined twist snap socket
         """
         with BuildPart() as socket_fitting:
-            # Cylinder(
-            #     radius=self.connector_diameter+self.wall_width*4/3,
-            #     height=self.wall_depth,
-            #     align=(Align.CENTER, Align.CENTER, Align.MIN),
-            # )
-            # with BuildPart(socket_fitting.faces().sort_by(Axis.Z)[-1]) as snap_socket:
-            with BuildPart() as snap_socket:
+            Cylinder(
+                radius=self.connector_diameter+self.wall_width*4/3,
+                height=self.wall_depth,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+            )
+            with BuildPart(socket_fitting.faces().sort_by(Axis.Z)[-1]) as snap_socket:
                 Cylinder(
                     radius=self.connector_diameter+self.wall_width*4/3,
                     height=self.wall_depth*2,
@@ -455,7 +364,7 @@ class TwistSnapConnector:
             with PolarLocations(0, self.snapfit_count):
                 add(snapfit.part, mode=Mode.SUBTRACT)
 
-            path = trace_path.trim((self.arc_percentage/-200)*3.1,
+            path = trace_path.trim((self.arc_percentage/-200)*3.3,
                                    (self.arc_percentage/200)*1.1)
             with BuildPart(mode=Mode.PRIVATE) as snapfit:
                 path = path.rotate(Axis.Z, 90)
@@ -481,14 +390,8 @@ class TwistSnapConnector:
                     self.connector_diameter+self.snapfit_radius_extension+
                     self.tolerance*2, self.snapfit_count,
                     start_angle=self.arc_percentage*-4):
-                Cylinder(radius=self.snapfit_radius_extension / 2,
+                Cylinder(radius=self.snapfit_radius_extension / 2 - self.tolerance,
                             height=self.snapfit_height*2,
                             align=(Align.CENTER,Align.CENTER, Align.MIN))
 
         return socket_fitting
-    
-from ocp_vscode import show
-ts = TwistSnapConnector(4.5,2)
-show(ts.twist_snap_socket.part)
-from build123d import export_stl
-export_stl(ts.twist_snap_socket.part, 'stl/snap-socket.stl')
