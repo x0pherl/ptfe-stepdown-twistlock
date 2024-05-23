@@ -42,7 +42,7 @@ class ThreadedConnector:
         thread_angle (float): The thread angle of the connector.
     """
 
-    diameter: float = 10
+    diameter: float = 10.1
     length: float = 6.7
     thread_pitch:float = 1
     thread_angle:float = 30
@@ -166,7 +166,7 @@ def straight_cut_socket_fitting(knob_length=15, tube_outer_diameter=4.3,
 
     with BuildPart() as assembly:
         add(socket_fitting(knob_length))
-        add(flush_tube_path(external_radius=tube_outer_diameter, length=knob_length+2),
+        add(flush_tube_path(external_radius=tube_outer_diameter/2, length=knob_length+2),
             mode=Mode.SUBTRACT)
         add(Cylinder(radius=threaded_connector.diameter/2, height=threaded_connector.length,
                      align=(Align.CENTER, Align.CENTER, Align.MIN)),
@@ -187,7 +187,7 @@ def straight_cut_socket_fitting(knob_length=15, tube_outer_diameter=4.3,
         thread])
 
 def taper_cut_socket_fitting(knob_length=15, tube_outer_diameter=6.4, tube_inner_diameter=3.4,
-                        taper_end_diameter=2.7, taper_length=4,
+                        taper_end_diameter=2.9, taper_length=4,
                         threaded_connector:ThreadedConnector = ThreadedConnector()) -> Part:
     """
     Returns a twist snap socket fitting with a tapered path for
@@ -278,7 +278,7 @@ def straight_cut_connector_fitting(knob_length=15, tube_diameter=4.3,
 def taper_cut_connector_fitting(knob_length=15, tube_outer_diameter=6.4, tube_inner_diameter=3.4,
             taper_end_diameter=2.7, taper_length=4,
             threaded_connector:ThreadedConnector =
-                ThreadedConnector(diameter=10.1, thread_pitch=0.874)) -> Part:
+                ThreadedConnector(diameter=10.2, thread_pitch=0.874)) -> Part:
     """
     Returns a twist snap connector fitting with a tapered path for
     stepping between two internal tube diameters
@@ -323,18 +323,38 @@ def taper_cut_connector_fitting(knob_length=15, tube_outer_diameter=6.4, tube_in
         Part(label="assembly", children=[assembly.part]),
         thread])
 
-scc = straight_cut_connector_fitting()
-scs = straight_cut_socket_fitting()
-tcs_2mmID = taper_cut_socket_fitting(taper_end_diameter=2.2)
-tcs = taper_cut_socket_fitting()
+scc = straight_cut_connector_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.1, thread_pitch=1))
+scs = straight_cut_socket_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.1, thread_pitch=1))
+tcs_2mmID = taper_cut_socket_fitting(taper_end_diameter=2.5, threaded_connector =
+                ThreadedConnector(diameter=10.1, thread_pitch=1))
+tcs = taper_cut_socket_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.1, thread_pitch=1))
+scc_8 = straight_cut_connector_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.2, thread_pitch=0.874))
+scs_8 = straight_cut_socket_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.2, thread_pitch=0.874))
+tcs_2mmID_8 = taper_cut_socket_fitting(taper_end_diameter=2.5, threaded_connector =
+                ThreadedConnector(diameter=10.2, thread_pitch=0.874))
+tcs_8 = taper_cut_socket_fitting(threaded_connector =
+                ThreadedConnector(diameter=10.2, thread_pitch=0.874))
 
-export_step(tcs,'../step/snap-socket-step-down-OD6ID3-OD4ID2.5.step')
-export_step(tcs_2mmID,'../step/snap-socket-step-down-OD6ID3-OD4ID2.step')
-export_step(scc,'../step/snap-connector-straight-OD4.step')
-export_step(scs,'../step/snap-socket-straight-OD4.step')
+export_step(tcs,'../step/snap-socket-step-down-OD6ID3-OD4ID2.5-M10.step')
+export_step(tcs_2mmID,'../step/snap-socket-step-down-OD6ID3-OD4ID2-M10.step')
+export_step(scc,'../step/snap-connector-straight-OD4-M10.step')
+export_step(scs,'../step/snap-socket-straight-OD4-M10.step')
+export_step(tcs_8,'../step/snap-socket-step-down-OD6ID3-OD4ID2.5-1-8th.step')
+export_step(tcs_2mmID_8,'../step/snap-socket-step-down-OD6ID3-OD4ID2-1-8th.step')
+export_step(scc_8,'../step/snap-connector-straight-OD4-1-8th.step')
+export_step(scs_8,'../step/snap-socket-straight-OD4-1-8th.step')
 
-export_stl(tcs,'../stl/snap-socket-step-down-OD6ID3-OD4ID2.5.stl')
-export_stl(tcs_2mmID,'../stl/snap-socket-step-down-OD6ID3-OD4ID2.stl')
-export_stl(scc,'../stl/snap-connector-straight-OD4.stl')
-export_stl(scs,'../stl/snap-socket-straight-OD4.stl')
+export_stl(tcs,'../stl/snap-socket-step-down-OD6ID3-OD4ID2.5-M10.stl')
+export_stl(tcs_2mmID,'../stl/snap-socket-step-down-OD6ID3-OD4ID2-M10.stl')
+export_stl(scc,'../stl/snap-connector-straight-OD4-M10.stl')
+export_stl(scs,'../stl/snap-socket-straight-OD4-M10.stl')
+export_stl(tcs_8,'../stl/snap-socket-step-down-OD6ID3-OD4ID2.5-1-8th.stl')
+export_stl(tcs_2mmID_8,'../stl/snap-socket-step-down-OD6ID3-OD4ID2-1-8th.stl')
+export_stl(scc_8,'../stl/snap-connector-straight-OD4-1-8th.stl')
+export_stl(scs_8,'../stl/snap-socket-straight-OD4-1-8th.stl')
 show(tcs)

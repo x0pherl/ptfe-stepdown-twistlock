@@ -56,7 +56,7 @@ class TwistSnapConnector:
         ValueError: if end_finishes not in ["raw", "square", "fade", "chamfer"]:
     """
 
-    def __init__(self, connector_diameter=10, wall_size=2, tolerance=.15):
+    def __init__(self, connector_diameter=10, wall_size=2, tolerance=.12):
         """
         Initialize the InternalFitting by loading a configuration file.
 
@@ -252,7 +252,7 @@ class TwistSnapConnector:
         Returns:
             float: The allowance of size between the socket and the connector.
         """
-        return self.config.getfloat('general', 'tolerance', fallback=.15)
+        return self.config.getfloat('general', 'tolerance', fallback=.12)
 
     @tolerance.setter
     def tolerance(self, value):
