@@ -1,5 +1,4 @@
 """
-
 Twist & Snap PTFE Connectors
 
 name: ptfe_fittings.py
@@ -111,14 +110,15 @@ def connector_fitting(knob_length:float=10) -> Part:
     with BuildPart() as assembly:
         with BuildPart() as cone:
             with BuildSketch(Plane(origin=(0,0,0), z_dir=(0,0,1))) as cone_end:
-                RegularPolygon(radius=7, side_count=6, rotation=20)
+                RegularPolygon(radius=7, side_count=6)
                 fillet(cone_end.vertices(), radius=1)
             with BuildSketch(Plane(origin=(0,0,knob_length), z_dir=(0,0,1))):
                 Circle(radius=4.5+4*2/3)
             loft()
         with BuildPart(cone.faces().sort_by(Axis.Z)[-1]):
             with Locations(Location((0,0,4),(0,180,0))):
-                add(TwistSnapConnector(4.5,2).twist_snap_connector.part)
+                add(TwistSnapConnector(4.5,2).
+                    twist_snap_connector.part.rotate(Axis.Z, 42.5))
     return assembly.part
 
 def socket_fitting(knob_length:float=10) -> Part:
@@ -136,7 +136,7 @@ def socket_fitting(knob_length:float=10) -> Part:
     with BuildPart() as assembly:
         with BuildPart():
             with BuildSketch(Plane(origin=(0,0,0), z_dir=(0,0,1))) as cone_end:
-                RegularPolygon(radius=7, side_count=6, rotation=20)
+                RegularPolygon(radius=7, side_count=6)
                 fillet(cone_end.vertices(), radius=1)
             with BuildSketch(Plane(origin=(0,0,knob_length), z_dir=(0,0,1))):
                 Circle(radius=4.5+4*2/3)
@@ -357,4 +357,5 @@ export_stl(tcs_8,'../stl/snap-socket-step-down-OD6ID3-OD4ID2.5-1-8th.stl')
 export_stl(tcs_2mmID_8,'../stl/snap-socket-step-down-OD6ID3-OD4ID2-1-8th.stl')
 export_stl(scc_8,'../stl/snap-connector-straight-OD4-1-8th.stl')
 export_stl(scs_8,'../stl/snap-socket-straight-OD4-1-8th.stl')
-show(tcs)
+
+show(scc)

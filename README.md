@@ -14,9 +14,9 @@ You'll need to purchase Tube Fittings, and potentially tubing. Here are some sou
 
 | Description                             | Possible Source |
 | -----------                             | --------------- |
-| PC4-M10 Straight Pneumatic Tube Fitting (for 4mm OD tubing) | [BIQU] (https://www.amazon.com/gp/product/B01IB81IHG/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1) |
-| 1/8th threaded PC6-01 Through fitting (for 6mm OD tubing)| [Robot Digg] (https://www.robotdigg.com/product/755/Through-fitting-PC4-M6,-PC4-01,-PC6-M6-or-PC6-01-for-PTFE-Tubing) (be sure to select PC6-01)|
-| PTFE Teflon tubing (3mm Inner Diameter(ID) X 6mm Outer Diameter (OD)) | [uxcell] (https://www.amazon.com/gp/product/B09158R6LD)
+| PC4-M10 Straight Pneumatic Tube Fitting (for 4mm OD tubing) | [BIQU via Amazon](https://www.amazon.com/gp/product/B01IB81IHG/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1) |
+| 1/8th threaded PC6-01 Through fitting (for 6mm OD tubing)| [Robot Digg](https://www.robotdigg.com/product/755/Through-fitting-PC4-M6,-PC4-01,-PC6-M6-or-PC6-01-for-PTFE-Tubing) (be sure to select PC6-01) and print the -1-8th fitting parts|
+| PTFE Teflon tubing (3mm Inner Diameter(ID) X 6mm Outer Diameter (OD)) | [uxcell via Amazon](https://www.amazon.com/gp/product/B09158R6LD)
 
 ## Recommended Print Settings
 layer height: .15mm or lower (lower layer heights reduce friction if the filament is rubbing against the funnel feed)
