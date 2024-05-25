@@ -118,7 +118,7 @@ def connector_fitting(knob_length:float=10) -> Part:
         with BuildPart(cone.faces().sort_by(Axis.Z)[-1]):
             with Locations(Location((0,0,4),(0,180,0))):
                 add(TwistSnapConnector(4.5,2).
-                    twist_snap_connector.part.rotate(Axis.Z, 42.5))
+                    twist_snap_connector.part)
     return assembly.part
 
 def socket_fitting(knob_length:float=10) -> Part:
